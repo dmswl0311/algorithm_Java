@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.*;
 
 /**
- * 299040 3640
+ * 299040 3640 -> 300188 1388
  * 
  * @author CHO
  * @see https://www.acmicpc.net/problem/11967
@@ -69,11 +69,8 @@ public class BOJ_11967_불켜기 {
 			boolean flag = false;
 			Queue<int[]> q2 = new LinkedList<int[]>();
 			q2.add(new int[] { cur[0], cur[1] });
-			boolean[][][] vis = new boolean[N + 1][N + 1][4]; // 어느 방향에서 왔는지 방문표시
-			vis[cur[0]][cur[1]][0] = true;
-			vis[cur[0]][cur[1]][1] = true;
-			vis[cur[0]][cur[1]][2] = true;
-			vis[cur[0]][cur[1]][3] = true; // 시작점은 모든 방향으로 방문했다고 표시
+			boolean[][] vis = new boolean[N + 1][N + 1]; // 어느 방향에서 왔는지 방문표시
+			vis[cur[0]][cur[1]] = true;
 			while (!q2.isEmpty()) {
 				int[] cur2 = q2.poll();
 				if (hubo[cur2[0]][cur2[1]]) {
@@ -83,8 +80,8 @@ public class BOJ_11967_불켜기 {
 				for (int j = 0; j < 4; j++) {
 					int nx = cur2[0] + dir[j][0];
 					int ny = cur2[1] + dir[j][1];
-					if (isOkay(nx, ny) && !vis[nx][ny][j] && light[nx][ny]) {
-						vis[nx][ny][j] = true;
+					if (isOkay(nx, ny) && !vis[nx][ny] && light[nx][ny]) {
+						vis[nx][ny] = true;
 						q2.add(new int[] { nx, ny });
 					}
 				}
