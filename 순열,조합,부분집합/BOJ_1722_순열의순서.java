@@ -4,10 +4,11 @@ import java.io.*;
 import java.util.*;
 
 /**
- * 
+ * 11472	84
  * @author CHO
  * @see https://www.acmicpc.net/problem/1722
  * @category 조합
+ * 
  */
 public class BOJ_1722_순열의순서 {
 
@@ -55,7 +56,7 @@ public class BOJ_1722_순열의순서 {
 			}
 			System.out.println(sb);
 		} else if (num == 2) {
-			long result = 0;
+			long result = 1; // 순서는 1부터 있으니까 0 x
 			arr = new int[N];
 			for (int i = 0; i < N; i++) {
 				arr[i] = Integer.parseInt(st.nextToken());
