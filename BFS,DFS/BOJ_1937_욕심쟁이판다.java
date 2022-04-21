@@ -2,119 +2,52 @@ import java.io.*;
 import java.util.*;
 
 /**
- * ?
+ * 40960	400
  * @author CHO
  * @see https://www.acmicpc.net/problem/1937
- * @category 구현
+ * @category DFS+DP
  */
 public class BOJ_1937_욕심쟁이판다 {
-	static class Pos implements Comparable<Pos> {
-		int x;
-		int y;
-		int w;
-
-		public Pos(int x, int y, int w) {
-			this.x = x;
-			this.y = y;
-			this.w = w;
-		}
-		
-		public Pos(int x, int y) {
-			this.x = x;
-			this.y = y;
-		}
-
-		@Override
-		public int compareTo(Pos o) {
-			if(this.w==o.w) {
-				if(this.x==o.x) {
-					return this.y-o.y;
-				}
-				return this.x-o.x;
-			}
-			return this.w-o.w;
-		}
-
-	}
-
 	static StringTokenizer st;
-	static int N;
-	static int[][] map;
-	static int[][] ori;
-	static int[][] dp;
-	static int max;
-	static int[][] dir = { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
-	static Queue<Pos> q;
-	static boolean[][] vis;
+	static int N, max;
+	static int[][] map, dp;
+	static int[][] dir = { { 1, 0 }, { 0, 1 }, { 0, -1 }, { -1, 0 }, };
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		N = Integer.parseInt(br.readLine());
 		map = new int[N][N];
-		ori = new int[N][N];
-		dp = new int[N][N];
-		PriorityQueue<Pos> pq = new PriorityQueue<>();
-		for (int i = 0; i < N; i++) {
+		for (int n = 0; n < N; n++) {
 			st = new StringTokenizer(br.readLine());
-			for (int j = 0; j < N; j++) {
-				map[i][j] = Integer.parseInt(st.nextToken());
-				ori[i][j] = map[i][j];
-				pq.add(new Pos(i, j, map[i][j]));
+			for (int m = 0; m < N; m++) {
+				map[n][m] = Integer.parseInt(st.nextToken());
 			}
 		} // 입력 완료
-		max = 0;
-		while(!pq.isEmpty()) {
-			Pos cur=pq.poll();
-			q = new LinkedList<>();
-			vis = new boolean[N][N];
-			bfs(cur.x, cur.y);
-			for (int i = 0; i < N; i++) {
-				for (int j = 0; j < N; j++) {
-					if (vis[i][j])
-						map[i][j] = ori[i][j];
+		max = 1; // 한번 먹고 시작하므로 1
+		dp = new int[N][N];
+		for (int n = 0; n < N; n++) {
+			for (int m = 0; m < N; m++) {
+				// 방문하지 않은 지점만
+				if(dp[n][m]==0) {
+					int cnt=dfs(n,m);
+					max=max<cnt?cnt:max;
 				}
 			}
 		}
 		System.out.println(max);
-//		for (int i = 0; i < N; i++) {
-//			for (int j = 0; j < N; j++) {
-//				System.out.print(dp[i][j] + " ");
-//			}
-//			System.out.println();
-//		}
-
 	}
 
-	public static void bfs(int i, int j) {
-		int cnt = 0;
-		q.add(new Pos(i, j));
-		vis[i][j] = true;
-		while (!q.isEmpty()) {
-			int size = q.size();
-			while (size-- > 0) {
-				Pos cur = q.poll();
-				int pre = map[cur.x][cur.y];
-				map[cur.x][cur.y] = 0;
-				for (int k = 0; k < dir.length; k++) {
-					int nx = cur.x + dir[k][0];
-					int ny = cur.y + dir[k][1];
-					if (is(nx, ny) && pre > map[nx][ny] && !vis[nx][ny]) {
-//						if(dp[nx][ny]>0) {
-//							max = max < cnt+dp[nx][ny] ? cnt+dp[nx][ny] : max;
-//							continue;
-//						}
-						vis[nx][ny] = true;
-						q.add(new Pos(nx, ny));
-					}
-				}
+	private static int dfs(int x, int y) {
+		if(dp[x][y]!=0) return dp[x][y]; //이미 최대값이 저장되어 있을 경우 더이상 계산할 필요 X
+		dp[x][y]=1;
+		for (int i = 0; i < dir.length; i++) {
+			int nx = x + dir[i][0];
+			int ny = y + dir[i][1];
+			if (nx >= 0 && ny >= 0 && nx < N && ny < N && map[nx][ny] > map[x][y]) {
+				dp[x][y]=Math.max(dp[x][y], dfs(nx,ny)+1); //내가 얼마나 갈 수 있는지 최대값 저장
 			}
-			cnt++;
 		}
-		dp[i][j] = cnt;
-		max = max < cnt ? cnt : max;
+		return dp[x][y];
 	}
 
-	private static boolean is(int nx, int ny) {
-		return nx >= 0 && ny >= 0 && nx < N && ny < N;
-	}
 }
